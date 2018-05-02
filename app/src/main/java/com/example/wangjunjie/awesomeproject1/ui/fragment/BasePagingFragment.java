@@ -44,10 +44,11 @@ public abstract class BasePagingFragment extends RxFragment implements SwipeRefr
 
 
     public View onCreateContentView(final LayoutInflater layoutInflater, @NonNull final ViewGroup container,
-                                             @Nullable final Bundle savedInstanceState) {
+                                    @Nullable final Bundle savedInstanceState) {
         return layoutInflater.inflate(onCreatePagingLayoutId(), container, false);
     }
 
+    //返回页面
     protected int onCreatePagingLayoutId(){
         return R.layout.fragment_paging;
     }
@@ -61,7 +62,7 @@ public abstract class BasePagingFragment extends RxFragment implements SwipeRefr
         }
 
         mSwipeRefreshLayout.post(() -> {
-             onRefreshing();
+            onRefreshing();
         });
 
     }

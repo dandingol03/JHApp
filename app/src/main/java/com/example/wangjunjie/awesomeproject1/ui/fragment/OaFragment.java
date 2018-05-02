@@ -3,12 +3,22 @@ package com.example.wangjunjie.awesomeproject1.ui.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.wangjunjie.awesomeproject1.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,9 +34,13 @@ public class OaFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mRecyclerView;
+    private BaseAdapter mAdapter;
+    private List<String> mList=new ArrayList<>();
+    private static int refreshCount;
+    private Handler mHandler=new Handler();
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -55,11 +69,11 @@ public class OaFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //generated
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,12 +82,72 @@ public class OaFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_oa, container, false);
     }
 
+    @Override
+    public void onViewCreated(View pView, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(pView, savedInstanceState);
+        mSwipeRefreshLayout=(SwipeRefreshLayout)pView.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
+        mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(android.R.color.white);
+
+
+        final LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(OrientationHelper.VERTICAL);
+        mRecyclerView=(RecyclerView)pView.findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mAdapter=new BaseAdapter(mList,getContext());
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //do something here
+            }
+        });
+
+
+        SwipeRefreshLayout.OnRefreshListener listener=new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                try{
+                    mList.clear();
+                    refreshCount+=10;
+                    for(int i=0;i<10;i++)
+                    {
+                        mList.add((i+refreshCount)+"");
+                    }
+                    mAdapter.notifyDataSetChanged();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        mSwipeRefreshLayout.setOnRefreshListener(listener);
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                listener.onRefresh();
+            }
+        });
+
+
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -105,5 +179,45 @@ public class OaFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private static class MyHolder extends  RecyclerView.ViewHolder{
+        public TextView textView;
+        //实现的方法
+        public MyHolder(View itemView) {
+            super(itemView);
+            textView= (TextView) itemView.findViewById(R.id.tv_item);
+        }
+    }
+
+    private static class BaseAdapter extends  RecyclerView.Adapter<MyHolder>
+    {
+
+        private List mList;
+        private Context mContext;
+
+        public BaseAdapter(List mList, Context mContext) {
+            this.mList = mList;
+            this.mContext = mContext;
+        }
+
+
+        @Override
+        public MyHolder onCreateViewHolder( ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.recycler_item,parent,false);
+            MyHolder holder = new MyHolder(view);
+            return holder;
+        }
+
+        @Override
+        public void onBindViewHolder(MyHolder holder, int position) {
+            String item =(String) mList.get(position);
+            holder.textView.setText(item);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mList.size();
+        }
     }
 }

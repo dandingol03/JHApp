@@ -37,7 +37,7 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity  implements HomeFragment.OnFragmentInteractionListener,
-ContactFragment.OnFragmentInteractionListener,OaFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener{
+        ContactFragment.OnFragmentInteractionListener,OaFragment.OnFragmentInteractionListener,ProfileFragment.OnFragmentInteractionListener{
 
     private final String baseUrl="http://192.168.0.198:8080/sdrpoms/";
     private final String nodejsUrl="http://211.87.225.248:3006/api/";
@@ -180,14 +180,14 @@ ContactFragment.OnFragmentInteractionListener,OaFragment.OnFragmentInteractionLi
                 new NavigationTabBar.Model.Builder(
                         getResources().getDrawable(R.drawable.ic_first),
                         Color.parseColor(colors[2]))
-                        .title("Heart")
+                        .title("Home")
                         .build()
         );
         models.add(
                 new NavigationTabBar.Model.Builder(
                         getResources().getDrawable(R.drawable.ic_second),
                         Color.parseColor(colors[1]))
-                        .title("Cup")
+                        .title("Oa")
                         .build()
         );
         models.add(
@@ -206,7 +206,7 @@ ContactFragment.OnFragmentInteractionListener,OaFragment.OnFragmentInteractionLi
         );
 
         mNavigationTabBar.setModels(models);
-        mNavigationTabBar.setViewPager(mViewPager, 2);
+        mNavigationTabBar.setViewPager(mViewPager, 1);
         mNavigationTabBar.setBehaviorEnabled(true);
         mNavigationTabBar.setOnTabBarSelectedIndexListener(new NavigationTabBar.OnTabBarSelectedIndexListener() {
             @Override
