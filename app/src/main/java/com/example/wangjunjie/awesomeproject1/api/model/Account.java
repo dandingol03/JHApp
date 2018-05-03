@@ -1,4 +1,4 @@
-package com.example.wangjunjie.awesomeproject1.model;
+package com.example.wangjunjie.awesomeproject1.api.model;
 
 
 import android.os.Parcel;

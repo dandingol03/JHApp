@@ -5,21 +5,22 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.example.wangjunjie.awesomeproject1.adapter.TabFragmentPagerAdapter;
+import com.example.wangjunjie.awesomeproject1.api.model.Paging;
+import com.example.wangjunjie.awesomeproject1.api.service.PatrolManagementService;
 import com.example.wangjunjie.awesomeproject1.ui.fragment.ContactFragment;
 import com.example.wangjunjie.awesomeproject1.ui.fragment.HomeFragment;
 import com.example.wangjunjie.awesomeproject1.ui.fragment.OaFragment;
 import com.example.wangjunjie.awesomeproject1.ui.fragment.ProfileFragment;
-import com.example.wangjunjie.awesomeproject1.service.LoginService;
+import com.example.wangjunjie.awesomeproject1.api.service.LoginService;
 import com.example.wangjunjie.awesomeproject1.util.NetworkUtils;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -29,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import devlight.io.library.ntb.NavigationTabBar;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,35 +45,52 @@ public class MainActivity extends AppCompatActivity  implements HomeFragment.OnF
     private final String baseUrl="http://192.168.0.198:8080/sdrpoms/";
     private final String nodejsUrl="http://211.87.225.248:3006/api/";
     private LoginService mLoginService;
+    private PatrolManagementService mPatrolManagementService;
     private TabLayout tabLayout;
     private List<Fragment> fragments=null;
     private TabFragmentPagerAdapter mAdapter=null;
     private ViewPager mViewPager;
     private NavigationTabBar mNavigationTabBar;
 
-    private void go2Oa(LoginService apiService)
+    private void getPatrolTeamInfo(PatrolManagementService mPatrolManagementService)
     {
-        Call<ResponseBody> res= apiService.oa("办公","0005",NetworkUtils.getCookie());
-        res.enqueue(new Callback<ResponseBody>(){
+        Paging paging=new Paging();
+        Gson mGson = new Gson();
+        String string = mGson.toJson(paging);
+        RequestBody body= RequestBody.create(MediaType.parse("application/json; charset=UTF-8"),string);
+        mPatrolManagementService.patrolManagementTaskQueryList(body,NetworkUtils.getCookie())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.io())
+                .subscribe(new Subscriber<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try{
-                    String content=new String(response.body().bytes());
-                    Log.d("===",content);
-                }catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+                    }
 
-                Log.d("===","success");
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("error",e.toString());
+                    }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("error",t.toString());
-            }
-        });
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try{
+
+                            //cookie=  response.raw().header("Cookie");
+                            String content=new String(responseBody.bytes());
+                            Log.d("===",content);
+
+                            getPatrolTeamInfo(mPatrolManagementService);
+                        }catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                        Log.d("===","success");
+                    }
+                });
+
+
+
     }
 
 
@@ -99,7 +119,7 @@ public class MainActivity extends AppCompatActivity  implements HomeFragment.OnF
                             String content=new String(responseBody.bytes());
                             Log.d("===",content);
 
-                            //go2Oa(apiService);
+                            getPatrolTeamInfo(mPatrolManagementService);
                         }catch (Exception e)
                         {
                             e.printStackTrace();
@@ -144,10 +164,9 @@ public class MainActivity extends AppCompatActivity  implements HomeFragment.OnF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mLoginService= NetworkUtils.createService(LoginService.class);
+        mPatrolManagementService=NetworkUtils.createService(PatrolManagementService.class);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //发送登陆请求
-        //loginUseRetrofit();
         mViewPager = (ViewPager) findViewById(R.id.vp_horizontal_ntb);
         initData();
         mAdapter=new TabFragmentPagerAdapter(getSupportFragmentManager(),fragments);
@@ -156,6 +175,14 @@ public class MainActivity extends AppCompatActivity  implements HomeFragment.OnF
         initUi();
 
 
+        //发送登陆请求
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                loginInURL();
+//            }
+//        }).start();
+        loginUseRetrofit();
     }
 
     private void initData()
