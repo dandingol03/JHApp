@@ -3,12 +3,22 @@ package com.example.wangjunjie.awesomeproject1.ui.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.wangjunjie.awesomeproject1.R;
+import com.mikepenz.iconics.context.IconicsLayoutInflater2;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.bingoogolapple.bgabanner.BGABanner;
+import cn.bingoogolapple.bgabanner.BGALocalImageSize;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,7 +76,11 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View pView=inflater.inflate(R.layout.fragment_home, container, false);
+        BGALocalImageSize localImageSize = new BGALocalImageSize(780, 250, 320, 140);
+        BGABanner mContentBanner=(BGABanner)pView.findViewById(R.id.banner_content);
+        mContentBanner.setData(localImageSize, ImageView.ScaleType.CENTER_CROP,R.drawable.deep_night,R.drawable.night,R.drawable.hill);
+        return pView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -74,6 +88,12 @@ public class HomeFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override

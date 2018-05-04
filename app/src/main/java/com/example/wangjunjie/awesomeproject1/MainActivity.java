@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity  implements HomeFragment.OnF
                             String content=new String(responseBody.bytes());
                             Log.d("===",content);
 
-                            getPatrolTeamInfo(mPatrolManagementService);
                         }catch (Exception e)
                         {
                             e.printStackTrace();

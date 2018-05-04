@@ -46,4 +46,27 @@ dependencies {
     compile 'com.trello.rxlifecycle2:rxlifecycle-android-lifecycle:2.1.0'
     compile 'com.android.support:recyclerview-v7:26.0.0'
 
+
+
+    //iconics
+    implementation "com.mikepenz:iconics-core:3.0.3@aar"
+    implementation "com.mikepenz:iconics-views:3.0.3@aar"
+
+    implementation 'com.mikepenz:google-material-typeface:3.0.1.2.original@aar'
+    implementation 'com.mikepenz:material-design-iconic-typeface:2.2.0.4@aar'
+    implementation 'com.mikepenz:fontawesome-typeface:5.0.6.0@aar'
+    implementation 'com.mikepenz:octicons-typeface:3.2.0.4@aar'
+    implementation 'com.mikepenz:meteocons-typeface:1.1.0.4@aar'
+    implementation 'com.mikepenz:community-material-typeface:2.0.46.1@aar'
+    implementation 'com.mikepenz:weather-icons-typeface:2.0.10.4@aar'
+    implementation 'com.mikepenz:typeicons-typeface:2.0.7.4@aar'
+    implementation 'com.mikepenz:entypo-typeface:1.0.0.4@aar'
+    implementation 'com.mikepenz:devicon-typeface:2.0.0.4@aar'
+    implementation 'com.mikepenz:foundation-icons-typeface:3.0.0.4@aar'
+    implementation 'com.mikepenz:ionicons-typeface:2.0.1.4@aar'
+    implementation 'com.mikepenz:pixeden-7-stroke-typeface:1.2.0.2@aar'
+
+    //广告栏
+    implementation 'cn.bingoogolapple:bga-banner:2.2.4@aar'
+
 }
