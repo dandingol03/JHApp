@@ -3,12 +3,21 @@ package com.example.wangjunjie.awesomeproject1.ui.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
 
 import com.example.wangjunjie.awesomeproject1.R;
+import com.example.wangjunjie.awesomeproject1.util.NetworkUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +36,9 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private WebView webView;
+    private Button button;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,6 +78,45 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
+    }
+
+    public static void synCookies(Context context, String url) {
+        CookieSyncManager.createInstance(context);
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        cookieManager.removeSessionCookie();//移除
+        cookieManager.setCookie(url, NetworkUtils.getCookie());//cookies是在HttpClient中获得的cookie
+        CookieSyncManager.getInstance().sync();
+    }
+
+    @Override
+    public void onViewCreated(View pView, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(pView, savedInstanceState);
+        webView=(WebView)pView.findViewById(R.id.webView);
+        button=(Button)pView.findViewById(R.id.button);
+        WebSettings settings=webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                //返回值是true的时候是控制网页在WebView中去打开，如果为false调用系统浏览器或第三方浏览器打开
+                view.loadUrl(url);
+                return true;
+            }
+            //WebViewClient帮助WebView去处理一些页面控制和请求通知
+        });
+        webView.setWebChromeClient(new WebChromeClient());
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String url= "http://192.168.0.198:8080/sdrpoms/welcome?menuName=%E5%8A%9E%E5%85%ACOA&menuId=0005";
+                synCookies(getContext(),url);
+                webView.loadUrl(url);
+            }
+        });
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

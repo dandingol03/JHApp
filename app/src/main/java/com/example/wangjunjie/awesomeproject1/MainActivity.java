@@ -22,6 +22,8 @@ import com.example.wangjunjie.awesomeproject1.api.service.LoginService;
 import com.example.wangjunjie.awesomeproject1.util.NetworkUtils;
 import com.google.gson.Gson;
 
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -33,9 +35,6 @@ import devlight.io.library.ntb.NavigationTabBar;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
@@ -75,6 +74,10 @@ public class MainActivity extends AppCompatActivity  implements HomeFragment.OnF
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         try{
+
+                            String mobileJson="{name:'danding'}";
+                            Gson gs=new Gson();
+                            JSONObject ob=gs.fromJson(mobileJson,JSONObject.class);
 
                             //cookie=  response.raw().header("Cookie");
                             String content=new String(responseBody.bytes());
@@ -172,7 +175,6 @@ public class MainActivity extends AppCompatActivity  implements HomeFragment.OnF
         mViewPager.setAdapter(mAdapter);
         mViewPager.setCurrentItem(0);
         initUi();
-
 
         //发送登陆请求
 //        new Thread(new Runnable() {
