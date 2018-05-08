@@ -38,6 +38,9 @@ public class HomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+
+    private List mList;
+
     private OnFragmentInteractionListener mListener;
 
     public HomeFragment() {
@@ -93,6 +96,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
 
     }
 

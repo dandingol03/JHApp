@@ -130,6 +130,7 @@ public class OaFragment extends Fragment {
         };
 
         mSwipeRefreshLayout.setOnRefreshListener(listener);
+        //
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
